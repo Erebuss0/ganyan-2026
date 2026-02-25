@@ -215,18 +215,11 @@ class GameManager:
 
 game = GameManager()
 app = FastAPI()
-# Bu liste, senin sitenin her yerden erişilmesini sağlar
-origins = [
-    "https://ganyan-2026.vercel.app",  # Senin Vercel adresin
-    "http://localhost:5500",           # Kendi bilgisayarın için test adresi
-    "http://127.0.0.1:5500"
-]
 
-# Herkese, her yerden izin ver (En esnek ayar)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],      # Yıldız koyarak "Hangi site gelirse gelsin kabul et" diyoruz
-    allow_credentials=False,  # Yıldız varken burası False olmak zorunda, yoksa hata verir
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
