@@ -1,35 +1,41 @@
 import asyncio
 import random 
-import json
-import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from pymongo import MongoClient
 from backend.game_logic.models import Horse, Race
 
 # ==========================================
-# YENİ: BASİT JSON VERİTABANI SİSTEMİ
+# BULUT VERİTABANI (MONGODB) BAĞLANTISI
 # ==========================================
-DB_FILE = ".users.db"
+MONGO_URI = "mongodb+srv://Erebus:Daedotaekwando579%3F@cluster0.m0zkigz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
-def load_db():
-    if not os.path.exists(DB_FILE):
-        with open(DB_FILE, "w", encoding="utf-8") as f:
-            json.dump({}, f)
-        return {}
-    with open(DB_FILE, "r", encoding="utf-8") as f:
-        try:
-            return json.load(f)
-        except:
-            return {}
+try:
+    client = MongoClient(MONGO_URI)
+    db = client["ganyan_db"]
+    users_collection = db["users"]
+    print("✅ MongoDB Atlas Bağlantısı Başarılı!")
+except Exception as e:
+    print("❌ MongoDB Bağlantı Hatası:", e)
 
-def save_db(data):
-    with open(DB_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
+def get_user(username):
+    return users_collection.find_one({"username": username})
 
-# ==========================================
-# YENİ: KAYIT VE GİRİŞ İÇİN VERİ MODELLERİ
-# ==========================================
+def create_user(username, password):
+    users_collection.insert_one({
+        "username": username,
+        "password": password,
+        "balance": 1000,
+        "last_reward_time": 0
+    })
+
+def update_user_balance(username, new_balance):
+    users_collection.update_one({"username": username}, {"$set": {"balance": new_balance}})
+
+def update_user_reward_time(username, reward_time):
+    users_collection.update_one({"username": username}, {"$set": {"last_reward_time": reward_time}})
+
 class UserAuth(BaseModel):
     username: str
     password: str
@@ -38,8 +44,6 @@ class UpdateBalanceReq(BaseModel):
     username: str
     amount: int
     is_daily_reward: bool = False
-
-# ==========================================
 
 class GameManager:
     def __init__(self):
@@ -57,9 +61,8 @@ class GameManager:
         }
         
     async def connect(self, websocket: WebSocket, name: str):
-        # YENİ: Oyuncu bağlandığında veritabanından güncel parasını çekiyoruz
-        db = load_db()
-        balance = db.get(name, {}).get("balance", 1000)
+        existing = get_user(name)
+        balance = existing.get("balance", 1000) if existing else 1000
 
         self.players[websocket] = {"name": name, "ready": False, "balance": balance}
         await self.broadcast_system_message(f"👋 {name} lobiye katıldı!")
@@ -86,11 +89,7 @@ class GameManager:
         if websocket in self.players:
             name = self.players[websocket]["name"]
             self.players[websocket]["balance"] = new_balance
-            # Veritabanını da güncelle
-            db = load_db()
-            if name in db:
-                db[name]["balance"] = new_balance
-                save_db(db)
+            update_user_balance(name, new_balance)
             await self.broadcast_leaderboard()
 
     async def broadcast(self, message: dict):
@@ -214,61 +213,51 @@ class GameManager:
         await self.broadcast({"type": "state_update", "state": "FINISHED", "winner": self.race.winner.name})
         await self.broadcast_players()
 
-
 game = GameManager()
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
-
-# ==========================================
-# YENİ: HTTP API (KAYIT, GİRİŞ VE BONUS GÜNCELLEME)
-# ==========================================
 @app.post("/api/register")
 def register_user(user: UserAuth):
-    db = load_db()
-    if user.username in db:
+    existing = get_user(user.username)
+    if existing:
         raise HTTPException(status_code=400, detail="Bu kullanıcı adı zaten alınmış!")
     
-    db[user.username] = {
-        "password": user.password,
-        "balance": 1000,
-        "last_reward_time": 0
-    }
-    save_db(db)
+    create_user(user.username, user.password)
     return {"message": "Hesap başarıyla oluşturuldu!", "balance": 1000, "last_reward_time": 0}
 
 @app.post("/api/login")
 def login_user(user: UserAuth):
-    db = load_db()
-    if user.username not in db:
+    existing = get_user(user.username)
+    if not existing:
         raise HTTPException(status_code=400, detail="Böyle bir kullanıcı bulunamadı!")
     
-    if db[user.username]["password"] != user.password:
+    if existing["password"] != user.password:
         raise HTTPException(status_code=400, detail="Hatalı şifre!")
         
     return {
         "message": "Giriş başarılı!", 
-        "balance": db[user.username]["balance"],
-        "last_reward_time": db[user.username].get("last_reward_time", 0)
+        "balance": existing.get("balance", 1000),
+        "last_reward_time": existing.get("last_reward_time", 0)
     }
 
 @app.post("/api/update_balance")
 def update_balance_api(req: UpdateBalanceReq):
-    # Bu API özellikle Günlük Bonus veya özel altın yüklemeleri için
-    db = load_db()
-    if req.username in db:
-        db[req.username]["balance"] += req.amount
+    existing = get_user(req.username)
+    if existing:
+        new_balance = existing.get("balance", 1000) + req.amount
+        update_user_balance(req.username, new_balance)
+
         if req.is_daily_reward:
             import time
-            db[req.username]["last_reward_time"] = int(time.time() * 1000)
-        save_db(db)
-        return {"new_balance": db[req.username]["balance"], "last_reward_time": db[req.username]["last_reward_time"]}
+            new_time = int(time.time() * 1000)
+            update_user_reward_time(req.username, new_time)
+            return {"new_balance": new_balance, "last_reward_time": new_time}
+
+        return {"new_balance": new_balance, "last_reward_time": existing.get("last_reward_time", 0)}
+        
     raise HTTPException(status_code=400, detail="Kullanıcı bulunamadı!")
 
-
-# ==========================================
-# WEBSOCKET (CANLI YARIŞ)
-# ==========================================
 @app.websocket("/ws/race")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept() 

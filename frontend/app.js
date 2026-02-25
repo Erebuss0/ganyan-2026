@@ -27,8 +27,8 @@ const authMessage = document.getElementById('authMessage');
 const dailyRewardBtn = document.getElementById('dailyRewardBtn');
 let rewardTimerInterval;
 
-const API_BASE = "http://127.0.0.1:8000/api";
-const WS_URL = "ws://127.0.0.1:8000/ws/race";
+const API_BASE = "https://ganyan-2026.onrender.com/api";
+const WS_URL = "wss://ganyan-2026.onrender.com/ws/race";
 
 // --- GİRİŞ YAP BUTONU ---
 loginBtn.addEventListener('click', async () => {
