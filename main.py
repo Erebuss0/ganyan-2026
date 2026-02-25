@@ -6,10 +6,23 @@ from pydantic import BaseModel
 from pymongo import MongoClient
 from backend.game_logic.models import Horse, Race
 
+app = FastAPI()
+
 # ==========================================
-# BULUT VERİTABANI (MONGODB) BAĞLANTISI
+# 1. GÜVENLİK KAPISI (CORS) - EN ÜSTTE OLMALI
 # ==========================================
-MONGO_URI = "mongodb+srv://Erebus:Daedotaekwando579%3F@cluster0.m0zkigz.mongodb.net/?appName=Cluster0"
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ==========================================
+# 2. BULUT VERİTABANI (MONGODB) BAĞLANTISI
+# ==========================================
+MONGO_URI = "mongodb+srv://Erebus:Daedotaekwando579%3F@cluster0.m0zkigz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 try:
     client = MongoClient(MONGO_URI)
@@ -18,17 +31,6 @@ try:
     print("✅ MongoDB Atlas Bağlantısı Başarılı!")
 except Exception as e:
     print("❌ MongoDB Bağlantı Hatası:", e)
-
-game = GameManager()
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],      # Yıldız koyarak her yerden girişe izin veriyoruz
-    allow_credentials=False,  # Yıldız varken burası False kalmalı
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 def get_user(username):
     return users_collection.find_one({"username": username})
@@ -223,6 +225,8 @@ class GameManager:
             p["ready"] = False
         await self.broadcast({"type": "state_update", "state": "FINISHED", "winner": self.race.winner.name})
         await self.broadcast_players()
+
+game = GameManager()
 
 @app.post("/api/register")
 def register_user(user: UserAuth):
