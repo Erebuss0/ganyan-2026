@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ganyan 2026 | Canlı At Yarışı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <div id="authOverlay" class="auth-overlay">
+        <div class="glass-card auth-box">
+            <h2>🏇 GANYAN <span>2026</span></h2>
+            <p>Lobiye Katılmak İçin Giriş Yap</p>
+            <div class="auth-inputs">
+                <input type="text" id="authUsername" placeholder="Kullanıcı Adı" autocomplete="off">
+                <input type="password" id="authPassword" placeholder="Şifre">
+            </div>
+            <button id="loginBtn" class="btn-primary">Giriş Yap</button>
+            <button id="registerBtn" class="btn-secondary" style="width: 100%; margin-top: 10px;">Yeni Hesap Aç</button>
+            <p id="authMessage" class="auth-message"></p>
+        </div>
+    </div>
+
+    <div class="container" id="gameContainer">
+        <header>
+            <h1>🏇 GANYAN <span>2026</span></h1>
+            <div id="game-status-panel" class="status-panel loading">
+                Lobiye Bağlanılıyor...
+            </div>
+        </header>
+
+        <main class="main-grid">
+            <aside class="left-panel">
+                <div class="glass-card balance-card">
+                    <h3>💰 <span id="playerNameDisplay">Oyuncu</span> Kasası</h3>
+                    <h2 class="balance-text"><span id="balance">0</span> Altın</h2>
+                    <button id="dailyRewardBtn" class="btn-reward">🎁 Günlük Ödülü Al</button>
+                </div>
+
+                <div class="glass-card betting-card">
+                    <h3>Favori Atını Seç</h3>
+                    <div class="horse-cards-grid" id="horseCards">
+                        <div class="horse-card selected" data-id="1">
+                            <div class="card-header">
+                                <h4>1. Şahbatur</h4>
+                                <span class="odds">3.00x</span>
+                            </div>
+                            <div class="card-stats">
+                                <div class="badges">
+                                    <span class="badge speed">⚡ Süratli</span>
+                                    <span class="badge track">🌧️ Çamurda İyi</span>
+                                </div>
+                                <span class="form-info">Son: -</span>
+                            </div>
+                        </div>
+                        <div class="horse-card" data-id="2">
+                            <div class="card-header">
+                                <h4>2. Gülbatur</h4>
+                                <span class="odds">3.00x</span>
+                            </div>
+                            <div class="card-stats">
+                                <div class="badges">
+                                    <span class="badge balance">⚖️ Dengeli</span>
+                                    <span class="badge track">☀️ Güneş Sever</span>
+                                </div>
+                                <span class="form-info">Son: -</span>
+                            </div>
+                        </div>
+                        <div class="horse-card" data-id="3">
+                            <div class="card-header">
+                                <h4>3. Poyraz</h4>
+                                <span class="odds">3.00x</span>
+                            </div>
+                            <div class="card-stats">
+                                <div class="badges">
+                                    <span class="badge speed">⚡ Süratli</span>
+                                    <span class="badge track">🌧️ Çamurda İyi</span>
+                                </div>
+                                <span class="form-info">Son: -</span>
+                            </div>
+                        </div>
+                        <div class="horse-card" data-id="4">
+                            <div class="card-header">
+                                <h4>4. Kafkaslı</h4>
+                                <span class="odds">3.00x</span>
+                            </div>
+                            <div class="card-stats">
+                                <div class="badges">
+                                    <span class="badge power">💪 Güçlü</span>
+                                    <span class="badge track">⛈️ Ağır Zemin Ustası</span>
+                                </div>
+                                <span class="form-info">Son: -</span>
+                            </div>
+                        </div>
+                        <div class="horse-card" data-id="5">
+                            <div class="card-header">
+                                <h4>5. Yavuzhan</h4>
+                                <span class="odds">3.00x</span>
+                            </div>
+                            <div class="card-stats">
+                                <div class="badges">
+                                    <span class="badge balance">⚖️ Dengeli</span>
+                                    <span class="badge track">☀️ Güneş Sever</span>
+                                </div>
+                                <span class="form-info">Son: -</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bet-controls">
+                        <div class="input-group">
+                            <label>Miktar (Altın):</label>
+                            <input type="number" id="betAmount" value="100" min="0" max="100000">
+                        </div>
+                        <button id="readyBtn" class="btn-primary">Bahsi Onayla & Hazır Ol!</button>
+                        <p class="hint">*Sadece izlemek için 0 girebilirsiniz.</p>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="center-panel">
+                <div class="canvas-wrapper">
+                    <div class="discord-overlay">
+                        <h4>👥 Lobidekiler</h4>
+                        <ul id="playersList"></ul>
+                    </div>
+                    <canvas id="gameCanvas" width="1600" height="900"></canvas>
+                    <div id="winnerAnnouncement" class="winner-text"></div>
+                </div>
+            </section>
+            
+            <aside class="right-panel">
+                <div class="glass-card leaderboard-card">
+                    <h3>🏆 En Zenginler</h3>
+                    <ul id="leaderboardList" class="leaderboard-list"></ul>
+                </div>
+                
+                <div class="glass-card chat-card">
+                    <h3>💬 Lobi Sohbeti</h3>
+                    <div id="chat-box" class="chat-messages"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Mesaj gönder...">
+                        <button id="sendChatBtn" class="btn-secondary">Gönder</button>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
