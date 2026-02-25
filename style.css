@@ -231,30 +231,48 @@ canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
 }
 .btn-reward:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 6px 20px rgba(241, 196, 15, 0.6); }
 .btn-reward:disabled { background: #7f8c8d; color: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; }
-/* =========================================
-   MOBİL EKRAN (TELEFON) UYUMLULUK AYARLARI
-   ========================================= */
-@media screen and (max-width: 768px) {
-    /* Yan yana duran ana panelleri alt alta sırala */
-    .game-container, .main-layout, .container, body > div {
+@media screen and (max-width: 992px) {
+    /* 1. ANA DÜZEN: Yan yana duran her şeyi zorla alt alta diz */
+    body, main, .container, .main-container, .game-container, .row, 
+    div[style*="display: flex"] {
         display: flex !important;
         flex-direction: column !important;
-        gap: 15px;
-    }
-    
-    /* Sağ ve sol panellerin genişliğini telefon ekranına %100 uydur */
-    .left-panel, .right-panel, .bet-panel, .chat-panel, .leaderboard-panel {
         width: 100% !important;
-        max-width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+        height: auto !important;
+        overflow-x: hidden !important; /* Ekranın sağa sola oynamasını kesinlikle engelle */
     }
 
-    /* Telefondaki yazıları ve kutuları biraz küçült (daha şık dursun) */
-    h1, h2 {
-        font-size: 1.5rem !important;
+    /* 2. PANELLER: Bahis, Sohbet, Lobi kutularını %100 genişliğe çek */
+    .left-panel, .right-panel, .bet-panel, .chat-panel, .leaderboard-panel, 
+    .lobby-panel, aside, section {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        margin: 0 0 20px 0 !important; /* Sadece altlarına boşluk bırak */
+        box-sizing: border-box !important;
+        flex: none !important; 
     }
-    .horse-box {
-        padding: 10px !important;
+
+    /* 3. YARIŞ PİSTİ: Ekranı bozmasını engelle, sığmazsa yatay kaydırma ver */
+    .race-track, .track-container, #race-container, .track {
+        width: 100% !important;
+        max-width: 100% !important;
+        position: relative !important;
+        overflow-x: auto !important; /* Finiş çizgisi sığmazsa parmakla kaydırılabilsin */
+        overflow-y: hidden !important;
+        padding-bottom: 15px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 4. ATLAR: Telefondaki dar piste sığmaları için biraz küçült (%80 boyut) */
+    .horse {
+        transform: scale(0.8) !important;
+        transform-origin: left center !important;
+    }
+
+    /* 5. METİNLER: Ekrandan taşmasın diye başlıkları ortala ve ufalt */
+    h1, h2, h3 {
+        font-size: 1.4rem !important;
+        text-align: center !important;
     }
 }
