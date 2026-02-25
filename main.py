@@ -222,10 +222,11 @@ origins = [
     "http://127.0.0.1:5500"
 ]
 
+# Herkese, her yerden izin ver (En esnek ayar)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True, # Adresleri yukarıda net belirttiğimiz için artık True kalabilir
+    allow_origins=["*"],      # Yıldız koyarak "Hangi site gelirse gelsin kabul et" diyoruz
+    allow_credentials=False,  # Yıldız varken burası False olmak zorunda, yoksa hata verir
     allow_methods=["*"],
     allow_headers=["*"],
 )
