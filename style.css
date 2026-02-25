@@ -231,48 +231,50 @@ canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
 }
 .btn-reward:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 6px 20px rgba(241, 196, 15, 0.6); }
 .btn-reward:disabled { background: #7f8c8d; color: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; }
+
 @media screen and (max-width: 992px) {
-    /* 1. ANA DÜZEN: Yan yana duran her şeyi zorla alt alta diz */
-    body, main, .container, .main-container, .game-container, .row, 
-    div[style*="display: flex"] {
+    /* 1. KİLİDİ AÇ: Telefonlarda aşağı kaydırmaya kesinlikle izin ver! */
+    body, html, .container {
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow-y: auto !important; /* Taşanları kesme, kaydırma çubuğu çıkar! */
+        overflow-x: hidden !important;
+    }
+
+    /* 2. IZGARAYI KIR: 3 Sütunu yan yana değil, alt alta diz */
+    .main-grid {
         display: flex !important;
         flex-direction: column !important;
-        width: 100% !important;
+        gap: 20px !important;
         height: auto !important;
-        overflow-x: hidden !important; /* Ekranın sağa sola oynamasını kesinlikle engelle */
+        overflow-y: visible !important;
     }
 
-    /* 2. PANELLER: Bahis, Sohbet, Lobi kutularını %100 genişliğe çek */
-    .left-panel, .right-panel, .bet-panel, .chat-panel, .leaderboard-panel, 
-    .lobby-panel, aside, section {
+    /* 3. PANELLER: Tüm parçaları telefonun tam genişliğine yay */
+    .left-panel, .center-panel, .right-panel {
         width: 100% !important;
         max-width: 100% !important;
-        min-width: 100% !important;
-        margin: 0 0 20px 0 !important; /* Sadece altlarına boşluk bırak */
-        box-sizing: border-box !important;
-        flex: none !important; 
+        min-height: auto !important;
+        overflow: visible !important;
     }
 
-    /* 3. YARIŞ PİSTİ: Ekranı bozmasını engelle, sığmazsa yatay kaydırma ver */
-    .race-track, .track-container, #race-container, .track {
+    /* 4. YARIŞ EKRANI (HAYATİ): Alt alta geçince boyu sıfırlanmasın diye yer açıyoruz */
+    .canvas-wrapper {
+        min-height: 350px !important; /* Mobilde yarış pisti ekranda bu kadar yer kaplasın */
         width: 100% !important;
-        max-width: 100% !important;
-        position: relative !important;
-        overflow-x: auto !important; /* Finiş çizgisi sığmazsa parmakla kaydırılabilsin */
-        overflow-y: hidden !important;
-        padding-bottom: 15px !important;
-        box-sizing: border-box !important;
+        border-radius: 10px !important;
     }
 
-    /* 4. ATLAR: Telefondaki dar piste sığmaları için biraz küçült (%80 boyut) */
-    .horse {
-        transform: scale(0.8) !important;
-        transform-origin: left center !important;
+    /* 5. KART İÇLERİ: Mobilde sohbet ve bahis alanları çok sıkışmasın */
+    .leaderboard-card, .chat-card, .betting-card {
+        max-height: none !important;
+        height: auto !important;
     }
-
-    /* 5. METİNLER: Ekrandan taşmasın diye başlıkları ortala ve ufalt */
-    h1, h2, h3 {
-        font-size: 1.4rem !important;
-        text-align: center !important;
+    .horse-cards-grid { 
+        min-height: 250px !important; 
+        overflow-y: visible !important; 
+    }
+    .chat-messages { 
+        min-height: 200px !important; 
     }
 }
