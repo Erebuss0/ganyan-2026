@@ -1,5 +1,5 @@
 /* =========================================
-   GENEL AYARLAR (TAM EKRAN VE KESİN KİLİT)
+   GENEL AYARLAR
 ========================================= */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 body { 
@@ -28,7 +28,7 @@ h1 span { color: #f1c40f; }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
 /* =========================================
-   3 SÜTUNLU YAYIN EKRANI (MİLİMETRİK HİZA)
+   3 SÜTUNLU YAYIN EKRANI
 ========================================= */
 .main-grid { flex: 1 1 0; display: grid; grid-template-columns: 310px 1fr 280px; gap: 15px; min-height: 0; overflow: hidden; }
 
@@ -42,7 +42,7 @@ h1 span { color: #f1c40f; }
 h3 { margin-bottom: 8px; color: #f1c40f; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; font-size: 0.95rem; flex-shrink: 0; }
 
 /* =========================================
-   SOL PANEL: BAHİS (Hizalama Çözümü)
+   SOL PANEL: BAHİS
 ========================================= */
 .balance-card { margin-bottom: 15px; flex-shrink: 0; }
 .betting-card { flex: 1 1 0; display: flex; flex-direction: column; margin-bottom: 0; min-height: 0; }
@@ -131,68 +131,70 @@ canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
 .auth-message.error { color: #e74c3c; }
 .auth-message.success { color: #2ecc71; }
 
-/* GÜNLÜK ÖDÜL BUTONU VE KASA TASARIMI */
 .balance-text { font-size: 1.5rem; color: #f1c40f; text-align: center; margin: 5px 0; }
 .btn-reward { width: 100%; margin-top: 5px; padding: 8px; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 800; cursor: pointer; background: linear-gradient(45deg, #f1c40f, #f39c12); color: #111; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4); transition: all 0.3s ease; }
 .btn-reward:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 6px 20px rgba(241, 196, 15, 0.6); }
 .btn-reward:disabled { background: #7f8c8d; color: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; }
 
-
 /* ========================================================
-   SADECE MOBİL İÇİN DÜZENLEMELER (Masaüstünü ASLA Bozmaz)
+   SADECE MOBİL İÇİN DÜZENLEMELER
 ======================================================== */
-@media screen and (max-width: 992px) {
-    /* Ekran kilidini sadece mobilde aç (Sayfa aşağı kayabilsin) */
-    body, html {
-        height: auto !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        display: block !important;
+@media screen and (max-width: 1024px) {
+    /* 1. MASAÜSTÜ KİLİTLERİNİ AÇ VE ALT ALTA DİZ */
+    body, html { height: auto !important; min-height: 100vh !important; overflow-y: auto !important; overflow-x: hidden !important; display: block !important; }
+    .container { height: auto !important; overflow: visible !important; display: block !important; }
+    .main-grid { display: flex !important; flex-direction: column !important; height: auto !important; overflow: visible !important; gap: 20px !important; }
+
+    /* 2. DİĞER KUTULARI EKRANA YAY */
+    .left-panel, .right-panel, .betting-card, .chat-card, .leaderboard-card {
+        flex: none !important; width: 100% !important; height: auto !important; max-height: none !important; overflow: visible !important;
     }
 
-    .container {
-        height: auto !important;
-        overflow: visible !important;
-        display: block !important;
-    }
-
-    /* 3'lü yapıyı yan yana değil, alt alta diz */
-    .main-grid {
-        display: flex !important;
-        flex-direction: column !important;
-        height: auto !important;
-        overflow: visible !important;
-        gap: 20px !important;
-    }
-
-    /* Panelleri telefon genişliğine yay */
-    .left-panel, .center-panel, .right-panel {
+    /* =================================================
+       3. KAYBOLAN YARIŞ EKRANINA "BETON" ÇÖZÜM
+    ================================================= */
+    .center-panel {
+        flex: none !important;
         width: 100% !important;
-        height: auto !important;
-        overflow: visible !important;
-        display: flex !important;
-        flex-direction: column !important;
+        height: 350px !important; /* Yüksekliği beton gibi sabitledik, artık çökemez! */
+        min-height: 350px !important;
+        display: block !important;
     }
-
-    /* Yarış ekranı boyutu (mobilde kendi içine çökmesin diye) */
     .canvas-wrapper {
-        min-height: 300px !important;
         width: 100% !important;
-        flex: none !important;
-        margin-bottom: 10px !important;
+        height: 100% !important; /* Center-panel ne kadarsa o kadar olacak */
+        display: block !important;
+        position: relative !important;
+        margin-bottom: 20px !important;
+        border-radius: 10px !important;
+    }
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important; /* ZOOM EFEKTİ: Atları ekrana yaklaştırır */
+        object-position: center center !important;
+    }
+    .discord-overlay {
+        transform: scale(0.65) !important; /* Lobidekiler menüsü artık minicik */
+        transform-origin: top left !important;
+        top: 10px !important; left: 10px !important;
     }
 
-    /* Kartların görünmez olmasını veya kesilmesini engelle */
-    .betting-card, .chat-card, .leaderboard-card {
-        flex: none !important;
-        height: auto !important;
-        max-height: none !important;
-    }
+    /* =================================================
+       4. SOHBET PARMAKLA KAYDIRMA AYARLARI
+    ================================================= */
+    .horse-cards-grid { min-height: 250px !important; height: auto !important; }
     
-    /* Atların listesi ve sohbet alanı tüm içeriği göstersin */
-    .horse-cards-grid, .chat-messages, .leaderboard-list {
-        height: auto !important;
-        max-height: none !important;
-        overflow-y: visible !important;
+    .chat-messages {
+        flex: none !important;
+        height: 250px !important;
+        max-height: 250px !important;
+        overflow-y: auto !important; /* Kaydırma çubuğunu zorla */
+        -webkit-overflow-scrolling: touch !important; /* TELEFONDA PARMAKLA KAYDIRMAYI AKTİF EDER */
+        display: block !important;
+        background: rgba(0,0,0,0.4) !important;
+        margin-bottom: 10px !important;
+        padding-bottom: 20px !important; /* En alttaki yazılar ezilmesin diye */
     }
+    .chat-input-area { position: relative !important; z-index: 10 !important; }
 }
