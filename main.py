@@ -4,6 +4,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pymongo import MongoClient
+import certifi
 from backend.game_logic.models import Horse, Race
 
 app = FastAPI()
@@ -25,7 +26,7 @@ app.add_middleware(
 MONGO_URI = "mongodb+srv://Erebus:Daedotaekwando579%3F@cluster0.m0zkigz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 try:
-    client = MongoClient(MONGO_URI)
+    client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
     db = client["ganyan_db"]
     users_collection = db["users"]
     print("✅ MongoDB Atlas Bağlantısı Başarılı!")

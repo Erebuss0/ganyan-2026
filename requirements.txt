@@ -3,3 +3,4 @@ uvicorn
 websockets
 pydantic
 pymongo[srv]
+certifi
