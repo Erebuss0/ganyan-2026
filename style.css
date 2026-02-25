@@ -1,0 +1,260 @@
+/* =========================================
+   GENEL AYARLAR (TAM EKRAN VE KESİN KİLİT)
+========================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+body { 
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+    color: #fff; 
+    height: 100vh; 
+    width: 100vw;
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    padding: 10px 15px; 
+}
+
+.container { flex: 1 1 0; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+
+/* ÜST BİLGİ */
+header { flex-shrink: 0; text-align: center; margin-bottom: 10px; }
+h1 { font-size: 2rem; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.2); margin-bottom: 5px; }
+h1 span { color: #f1c40f; }
+
+.status-panel { display: inline-block; padding: 6px 25px; border-radius: 50px; font-size: 1.1rem; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s ease; }
+.loading { background: #7f8c8d; }
+.lobby { background: #27ae60; }
+.countdown { background: #f39c12; }
+.racing { background: #e74c3c; animation: pulse 1s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+/* =========================================
+   3 SÜTUNLU YAYIN EKRANI (MİLİMETRİK HİZA)
+========================================= */
+.main-grid { flex: 1 1 0; display: grid; grid-template-columns: 310px 1fr 280px; gap: 15px; min-height: 0; overflow: hidden; }
+
+/* PANEL SINIRLAMALARI */
+.left-panel { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+.center-panel { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+.right-panel { display: flex; flex-direction: column; gap: 15px; min-height: 0; overflow: hidden; }
+
+/* KARTLAR */
+.glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); flex-shrink: 0; }
+h3 { margin-bottom: 8px; color: #f1c40f; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; font-size: 0.95rem; flex-shrink: 0; }
+
+/* =========================================
+   SOL PANEL: BAHİS (Hizalama Çözümü)
+========================================= */
+.balance-card { margin-bottom: 15px; flex-shrink: 0; }
+/* ÇÖZÜM: Kart orta alanla aynı boya uzar */
+.betting-card { flex: 1 1 0; display: flex; flex-direction: column; margin-bottom: 0; min-height: 0; }
+
+/* SADECE BURASI DEĞİŞTİ: justify-content: space-evenly; eklendi */
+.horse-cards-grid { flex: 1 1 0; display: flex; flex-direction: column; justify-content: space-evenly; gap: 8px; margin-bottom: 10px; overflow-y: auto; padding-right: 5px; } 
+
+.horse-card { background-color: rgba(0, 0, 0, 0.6) !important; background-blend-mode: overlay; position: relative; overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 12px; text-align: left; cursor: pointer; transition: all 0.2s ease; flex-shrink: 0; }
+.horse-card:hover { transform: translateY(-2px); background-color: rgba(255, 255, 255, 0.15) !important; }
+.horse-card.selected { border-color: #f1c40f; background-color: rgba(241, 196, 15, 0.15) !important; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
+
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; z-index: 2; position: relative; }
+.card-header h4 { font-size: 0.95rem; color: #ecf0f1; margin: 0; }
+.odds { background: rgba(241, 196, 15, 0.15); color: #f1c40f; border: 1px solid #f1c40f; border-radius: 6px; padding: 2px 6px; font-weight: 800; font-size: 0.8rem; }
+.card-stats { display: flex; justify-content: space-between; align-items: center; z-index: 2; position: relative; }
+.badges { display: flex; gap: 3px; }
+.form-info { font-size: 0.75rem; color: #bdc3c7; font-style: italic; font-weight: 600; }
+
+.horse-card[data-id="1"] { background-image: linear-gradient(135deg, rgba(231, 76, 60, 0.3), transparent); } 
+.horse-card[data-id="2"] { background-image: linear-gradient(135deg, rgba(52, 152, 219, 0.3), transparent); } 
+.horse-card[data-id="3"] { background-image: linear-gradient(135deg, rgba(241, 196, 15, 0.3), transparent); } 
+.horse-card[data-id="4"] { background-image: linear-gradient(135deg, rgba(155, 89, 182, 0.3), transparent); } 
+.horse-card[data-id="5"] { background-image: linear-gradient(135deg, rgba(46, 204, 113, 0.3), transparent); } 
+.horse-card::after { content: "🐎"; position: absolute; right: 5px; bottom: -5px; font-size: 2.5rem; opacity: 0.15; transform: rotate(-15deg); pointer-events: none; z-index: 1; }
+
+.badge { display: inline-block; font-size: 0.65rem; padding: 2px 5px; border-radius: 4px; font-weight: 600; }
+.badge.speed { background: #e74c3c; color: white; }
+.badge.balance { background: #3498db; color: white; }
+.badge.power { background: #9b59b6; color: white; }
+.badge.track { background: #d35400; color: white; }
+
+/* ÇÖZÜM: Butonları kartın EN ALTINA iter. Ortadaki boşluk gizlenir. */
+.bet-controls { margin-top: auto; flex-shrink: 0; } 
+.input-group { margin-bottom: 10px; }
+.input-group label { display: block; margin-bottom: 3px; font-size: 0.85rem; color: #bdc3c7; }
+input[type="number"], input[type="text"] { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-size: 0.95rem; outline: none; }
+.hint { font-size: 0.7rem; color: #95a5a6; margin-top: 5px; text-align: center; }
+button { width: 100%; padding: 10px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; color: white; }
+button:active { transform: scale(0.95); }
+button:disabled { background: #7f8c8d !important; cursor: not-allowed; }
+.btn-primary { background: linear-gradient(45deg, #11998e, #38ef7d); box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4); }
+.btn-primary:hover:not(:disabled) { background: linear-gradient(45deg, #0f877d, #2cd86b); }
+.btn-secondary { background: #2980b9; width: 70px; flex-shrink: 0; }
+
+/* =========================================
+   ORTA PANEL: OYUN EKRANI
+========================================= */
+.canvas-wrapper { flex: 1 1 0; position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); background: #4c9a2a; display: flex; }
+canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
+.winner-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2.2rem; font-weight: 800; text-shadow: 2px 2px 15px rgba(0,0,0,0.9); text-align: center; pointer-events: none; width: 100%; z-index: 20; }
+
+.discord-overlay { position: absolute; top: 15px; left: 15px; background: rgba(15, 20, 25, 0.75); backdrop-filter: blur(5px); border-radius: 8px; padding: 10px 15px; min-width: 160px; z-index: 10; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); pointer-events: none; }
+.discord-overlay h4 { font-size: 0.85rem; margin-bottom: 8px; color: #f1c40f; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+#playersList li { font-size: 0.8rem; padding: 2px 0; color: #ecf0f1; background: transparent; border: none; margin: 0; }
+
+/* =========================================
+   SAĞ PANEL: LİDERLİK + SOHBET
+========================================= */
+.leaderboard-card { 
+    flex: 0 1 auto; 
+    display: flex; 
+    flex-direction: column; 
+    margin-bottom: 0 !important; 
+    max-height: 35%; 
+    min-height: 0;
+}
+.leaderboard-list { 
+    flex: 0 1 auto; 
+    overflow-y: auto; 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+    font-size: 0.85rem; 
+    min-height: 0; 
+    padding-right: 5px;
+}
+
+/* Scroll (Kaydırma Çubuğu) Tasarımı */
+.horse-cards-grid::-webkit-scrollbar, .leaderboard-list::-webkit-scrollbar, .chat-messages::-webkit-scrollbar { width: 6px; }
+.horse-cards-grid::-webkit-scrollbar-thumb, .leaderboard-list::-webkit-scrollbar-thumb, .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+.leaderboard-list li { display: flex; justify-content: space-between; padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.leaderboard-list li:last-child { border-bottom: none; }
+.leaderboard-list .gold { color: #f1c40f; font-weight: bold; }
+
+/* Sohbet Kartı: Oyun ekranıyla aynı hizada duracak */
+.chat-card { 
+    flex: 1 1 0; 
+    display: flex; 
+    flex-direction: column; 
+    min-height: 0; 
+    margin-bottom: 0 !important; 
+}
+.chat-messages { 
+    flex: 1 1 0; 
+    overflow-y: auto; 
+    background: rgba(0,0,0,0.3); 
+    border-radius: 8px; 
+    padding: 10px; 
+    margin-bottom: 10px; 
+    font-size: 0.85rem; 
+    min-height: 0; 
+    word-break: break-all; 
+    overflow-wrap: break-word; 
+}
+.chat-messages div { margin-bottom: 8px; }
+.chat-messages strong { color: #3498db; }
+.chat-messages em { color: #f39c12; font-style: normal; font-size: 0.8rem; }
+.chat-input-area { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* =========================================
+   YENİ: GÜNLÜK ÖDÜL BUTONU TASARIMI
+========================================= */
+.btn-reward {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    background: linear-gradient(45deg, #f1c40f, #f39c12);
+    color: #111;
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
+    transition: all 0.3s ease;
+}
+.btn-reward:hover:not(:disabled) {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(241, 196, 15, 0.6);
+}
+.btn-reward:disabled {
+    background: #7f8c8d;
+    color: #bdc3c7;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* =========================================
+   YENİ: GİRİŞ / KAYIT EKRANI (AUTH OVERLAY)
+========================================= */
+.auth-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Her şeyin üstünde durur */
+    transition: opacity 0.5s ease;
+}
+.auth-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.auth-box {
+    width: 350px;
+    text-align: center;
+    padding: 30px 25px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+    border: 1px solid rgba(241, 196, 15, 0.3);
+}
+.auth-box h2 { font-size: 2rem; margin-bottom: 5px; }
+.auth-box h2 span { color: #f1c40f; }
+.auth-box p { font-size: 0.85rem; color: #bdc3c7; margin-bottom: 20px; }
+.auth-inputs input {
+    width: 100%; margin-bottom: 12px; padding: 12px;
+    font-size: 1rem; text-align: center;
+}
+.auth-message { margin-top: 15px; font-size: 0.85rem; font-weight: bold; min-height: 20px; }
+.auth-message.error { color: #e74c3c; }
+.auth-message.success { color: #2ecc71; }
+
+/* =========================================
+   YENİ: GÜNLÜK ÖDÜL BUTONU VE KASA TASARIMI
+========================================= */
+.balance-text { font-size: 1.5rem; color: #f1c40f; text-align: center; margin: 5px 0; }
+.btn-reward {
+    width: 100%; margin-top: 5px; padding: 8px; border: none; border-radius: 8px;
+    font-size: 0.85rem; font-weight: 800; cursor: pointer;
+    background: linear-gradient(45deg, #f1c40f, #f39c12); color: #111;
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4); transition: all 0.3s ease;
+}
+.btn-reward:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 6px 20px rgba(241, 196, 15, 0.6); }
+.btn-reward:disabled { background: #7f8c8d; color: #bdc3c7; box-shadow: none; cursor: not-allowed; transform: none; }
+/* =========================================
+   MOBİL EKRAN (TELEFON) UYUMLULUK AYARLARI
+   ========================================= */
+@media screen and (max-width: 768px) {
+    /* Yan yana duran ana panelleri alt alta sırala */
+    .game-container, .main-layout, .container, body > div {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px;
+    }
+    
+    /* Sağ ve sol panellerin genişliğini telefon ekranına %100 uydur */
+    .left-panel, .right-panel, .bet-panel, .chat-panel, .leaderboard-panel {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Telefondaki yazıları ve kutuları biraz küçült (daha şık dursun) */
+    h1, h2 {
+        font-size: 1.5rem !important;
+    }
+    .horse-box {
+        padding: 10px !important;
+    }
+}
